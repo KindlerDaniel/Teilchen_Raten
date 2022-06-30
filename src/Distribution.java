@@ -25,7 +25,7 @@ public class Distribution implements Cloneable, Comparable<Distribution> {
     }
 
     public Distribution(final int height, final int width, final List<Pair<Integer, Integer>> area, final Universe universe) {
-        this(height, width, equal_distr(height, width, area), universe);
+        this(height, width, equalDistr(height, width, area), universe);
 
     }
 
@@ -84,7 +84,7 @@ public class Distribution implements Cloneable, Comparable<Distribution> {
     // The Bhattacharyya distance
     public double similarity(final Distribution distribution) {
         return Board.all_positions(height, width).stream().
-        mapToDouble(pos -> Math.sqrt(probability(pos) * distribution.probability(pos))).sum();
+                mapToDouble(pos -> Math.sqrt(probability(pos) * distribution.probability(pos))).sum();
     }
 
     // diffuse the probability mass in a way particles could move
@@ -107,7 +107,7 @@ public class Distribution implements Cloneable, Comparable<Distribution> {
 
 
     // create field that is equally distributed within the area
-    private static double[][] equal_distr(final int height, final int width, final List<Pair<Integer, Integer>> area) {
+    private static double[][] equalDistr(final int height, final int width, final List<Pair<Integer, Integer>> area) {
         double[][] equalField = new double[height][width];
         double averageProb = 1.0 / area.size();
         area.stream().forEach(pair -> {
@@ -136,9 +136,9 @@ public class Distribution implements Cloneable, Comparable<Distribution> {
     // merge another field into own field.
     public void mergeIn(final Distribution other, final double prop) {
         Board.all_positions(height, width).stream().forEach(pos ->
-        field[pos.first][pos.second] =
-        (1 - prop) * field[pos.first][pos.second]
-        + prop * other.field[pos.first][pos.second]);
+                field[pos.first][pos.second] =
+                        (1 - prop) * field[pos.first][pos.second]
+                                + prop * other.field[pos.first][pos.second]);
         normalize();
     }
 
