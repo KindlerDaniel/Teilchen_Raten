@@ -1,6 +1,3 @@
-/*
-Updated whenever the Board or the Observer change state.
- */
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,102 +8,107 @@ Visualizes the Board and the Observer's probability distribution.
 Enables user interaction.
  */
 public class GUI {
-    Board board;
-    Observer observer;
-    Memory memory;
+    private Board board;
+    private Observer observer;
+    private Memory memory;
 
-    Font font = new Font("Arial", Font.PLAIN, 20);
+    private Font font = new Font("Arial", Font.PLAIN, 20);
     // Used colors
-    private static final Color color_grid = new Color(203, 255, 231);
-    private static final Color color_particle = new Color(110, 125, 255);
-    private static final Color color_rock = new Color(90, 50, 60);
-    private static final Color color_visible = new Color(255, 200, 100);
-    private static final Color color_inactive_button = new Color(255, 255, 255);
-    private static final Color absence_color = new Color(255, 255, 255);
-    private static final Color presence_color = new Color(140, 40, 50);
-    private static final Color color_backward = new Color(49, 160, 150);
-    private static final Color color_forward = new Color(142, 242, 196);
+    private static final Color COLOR_GRID = new Color(203, 255, 231);
+    private static final Color COLOR_PARTICLE = new Color(110, 125, 255);
+    private static final Color COLOR_ROCK = new Color(90, 50, 60);
+    private static final Color COLOR_VISIBLE = new Color(255, 200, 100);
+    private static final Color COLOR_INACTIVE_BUTTON = new Color(255, 255, 255);
+
+    private static final Color COLOR_ABSENCE = new Color(255, 255, 255);
+
+    private static final Color COLOR_PRESENCE = new Color(140, 40, 50);
+    private static final Color COLOR_BACKWARD = new Color(49, 160, 150);
+    private static final Color COLOR_FORWARD = new Color(142, 242, 196);
 
     // general structure
     private JFrame frame = new JFrame();
     private JPanel grid = new JPanel();
-    JPanel control_panel = new JPanel();
+    private JPanel controlPanel = new JPanel();
 
     // buttons controlling GUI-states
-    Place_item place_item = Place_item.Particle;
-    JButton button_particle;
-    JButton button_rock;
-    JButton button_visible;
+    private static GUI.PlaceItem placeItem = GUI.placeItem.Particle;
+    private JButton buttonParticle;
+    private JButton buttonRock;
+    private JButton buttonVisible;
 
     // More buttons
-    JButton button_backward;
-    JButton button_forward;
-    private JButton[][] grid_buttons;
+    private JButton buttonBackward;
+    private JButton buttonForward;
+    private JButton[][] gridButtons;
 
-    enum Place_item {Particle, Rock, Visible};
+    enum PlaceItem {Particle, Rock, Visible};
 
-    public GUI(int rows, int columns, Board board, Observer observer) {
+    public GUI(final int rows, final int columns, final Board board, final Observer observer) {
         this.board = board;
         this.observer = observer;
         memory = new Memory(board, observer);
 
 
         // Create buttons and assign their functionality
-        button_particle = new JButton("Teilchen");
-        button_particle.setFont(font);
-        button_particle.setBackground(color_particle);
-        button_particle.addActionListener(new Switch_particle_mode(button_particle));
+        buttonParticle = new JButton("Teilchen");
+        buttonParticle.setFont(font);
+        buttonParticle.setBackground(COLOR_PARTICLE);
+        buttonParticle.addActionListener(new SwitchParticleMode(buttonParticle));
 
-        button_rock = new JButton("Barriere");
-        button_rock.setFont(font);
-        button_rock.setBackground(color_inactive_button);
-        button_rock.addActionListener(new Switch_rock_mode(button_rock));
+        buttonRock = new JButton("Barriere");
+        buttonRock.setFont(font);
+        buttonRock.setBackground(COLOR_INACTIVE_BUTTON);
+        buttonRock.addActionListener(new SwitchRockMode(buttonRock));
 
-        button_visible = new JButton("Sichtbarkeit");
-        button_visible.setFont(font);
-        button_visible.setBackground(color_inactive_button);
-        button_visible.addActionListener(new Switch_visible_mode(button_visible));
+        buttonVisible = new JButton("Sichtbarkeit");
+        buttonVisible.setFont(font);
+        buttonVisible.setBackground(COLOR_INACTIVE_BUTTON);
+        buttonVisible.addActionListener(new SwitchVisibleMode(buttonVisible));
 
-        button_backward = new JButton("Zurück");
-        button_backward.setFont(font);
-        button_backward.setBackground(color_backward);
-        button_backward.addActionListener(new Step_backward());
+        buttonBackward = new JButton("Zurück");
+        buttonBackward.setFont(font);
+        buttonBackward.setBackground(COLOR_BACKWARD);
+        buttonBackward.addActionListener(new StepBackward());
 
-        button_forward = new JButton("Vor");
-        button_forward.setFont(font);
-        button_forward.setBackground(color_forward);
-        button_forward.addActionListener(new Step_forward());
+        buttonForward = new JButton("Vor");
+        buttonForward.setFont(font);
+        buttonForward.setBackground(COLOR_FORWARD);
+        buttonForward.addActionListener(new StepForward());
 
-        grid_buttons = new JButton[rows][columns];
+        gridButtons = new JButton[rows][columns];
         // Add buttons to grid
         grid.setLayout(new GridLayout(rows, columns));
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < columns; j++) {
-                grid_buttons[i][j] = new JButton("");
-                grid_buttons[i][j].setBackground(color_grid);
-                grid_buttons[i][j].setBackground(color_grid);
-                grid_buttons[i][j].addActionListener(new Grid_listener(i, j, grid_buttons[i][j]));
-                grid.add(grid_buttons[i][j]);
+                gridButtons[i][j] = new JButton("");
+                gridButtons[i][j].setBackground(COLOR_GRID);
+                gridButtons[i][j].setBackground(COLOR_GRID);
+                gridButtons[i][j].addActionListener(new GridListener(i, j, gridButtons[i][j]));
+                grid.add(gridButtons[i][j]);
             }
         }
 
         // Find size for the frame and grid
-        int screen_x = Toolkit.getDefaultToolkit().getScreenSize().width;
-        int screen_y = Toolkit.getDefaultToolkit().getScreenSize().height;
-        int shrink_to_square = screen_x / 4;
-        frame.setSize(new Dimension((int) (0.95 * screen_x), (int) (0.95 * screen_y)));
-        grid.setBorder(BorderFactory.createEmptyBorder(10, shrink_to_square, 10, shrink_to_square));
+        int screenX = Toolkit.getDefaultToolkit().getScreenSize().width;
+        int screenY = Toolkit.getDefaultToolkit().getScreenSize().height;
+        final int frameSize = 4;
+        final int border = 10;
+        final double fillScreen = 0.95;
+        int shrinkToSquare = screenX / frameSize;
+        frame.setSize(new Dimension((int) (fillScreen * screenX), (int) (fillScreen * screenY)));
+        grid.setBorder(BorderFactory.createEmptyBorder(border, shrinkToSquare, border, shrinkToSquare));
 
-        int dist_y = screen_y / 15;
-        int dist_x = screen_x / 4;
-        control_panel.setBorder(BorderFactory.createEmptyBorder(dist_y, dist_x, 2 * dist_y, dist_x));
-        control_panel.setLayout(new GridLayout(1, 1));
+        int distY = screenY / 15;
+        int distx = screenX / 4;
+        controlPanel.setBorder(BorderFactory.createEmptyBorder(distY, distx, 2 * distY, distx));
+        controlPanel.setLayout(new GridLayout(1, 1));
 
-        control_panel.add(button_rock);
-        control_panel.add(button_particle);
-        control_panel.add(button_visible);
-        control_panel.add(button_backward);
-        control_panel.add(button_forward);
+        controlPanel.add(buttonRock);
+        controlPanel.add(buttonParticle);
+        controlPanel.add(buttonVisible);
+        controlPanel.add(buttonBackward);
+        controlPanel.add(buttonForward);
 
         // Add both panels to frame
         frame.setLayout(new GridBagLayout());
@@ -121,155 +123,156 @@ public class GUI {
         constr.weighty = 1;
         constr.gridx = 0;
         constr.gridy = 1;
-        frame.add(control_panel, constr);
+        frame.add(controlPanel, constr);
 
         // final settings for the frame
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setTitle("particles with probabilities");
         frame.setVisible(true);
 
-        update_GUI();
+        updateGUI();
     }
 
 
     // Enables user to manipulate the board by clicking a field.
-    class Grid_listener implements ActionListener {
+    class GridListener implements ActionListener {
         private int i, j;
         private JButton myButton;
-        public Grid_listener(int i, int j, JButton button){
+        GridListener(final int i, final int j, final JButton button) {
             this.i = i;
             this.j = j;
             this.myButton = button;
         }
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             boolean changed = true;
-            switch(place_item){
+            switch(placeItem) {
                 case Rock:
-                    if (!board.switch_rock(i, j)){
+                    if (!board.switch_rock(i, j)) {
                         changed = false;
                     }
                     break;
                 case Particle:
-                    if (!board.switch_particle(i, j)){
+                    if (!board.switch_particle(i, j)) {
                         changed = false;
                     }
                     break;
                 case Visible:
                     board.switch_visible(i, j);
+                default:
             }
-            if (changed){
+            if (changed) {
                 memory.future_changed();
             }
-            update_GUI();
+            updateGUI();
         }
     }
 
     // Enables particle_mode. Allows user to add and delete particles.
-    class Switch_particle_mode implements ActionListener {
-        JButton button;
-        public Switch_particle_mode(JButton button){
+    class SwitchParticleMode implements ActionListener {
+        private JButton button;
+        SwitchParticleMode(final JButton button) {
             this.button = button;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            place_item = Place_item.Particle;
-            button_particle.setBackground(color_particle);
-            button_rock.setBackground(color_inactive_button);
-            button_visible.setBackground(color_inactive_button);
-            update_GUI();
+            placeItem = GUI.placeItem.Particle;
+            buttonParticle.setBackground(COLOR_PARTICLE);
+            buttonRock.setBackground(COLOR_INACTIVE_BUTTON);
+            buttonVisible.setBackground(COLOR_INACTIVE_BUTTON);
+            updateGUI();
         }
     }
 
     // Enables rock_mode. Allows user to add and delete rocks.
-    class Switch_rock_mode implements ActionListener {
-        JButton button;
-        public Switch_rock_mode(JButton button){
+    class SwitchRockMode implements ActionListener {
+        private JButton button;
+        SwitchRockMode(final JButton button) {
             this.button = button;
         }
 
         @Override
-        public void actionPerformed(ActionEvent e) {
-            place_item = Place_item.Rock;
-            button_particle.setBackground(color_inactive_button);
-            button_rock.setBackground(color_rock);
-            button_visible.setBackground(color_inactive_button);
-            update_GUI();
+        public void actionPerformed(final ActionEvent e) {
+            placeItem = GUI.placeItem.Rock;
+            buttonParticle.setBackground(COLOR_INACTIVE_BUTTON);
+            buttonRock.setBackground(COLOR_ROCK);
+            buttonVisible.setBackground(COLOR_INACTIVE_BUTTON);
+            updateGUI();
         }
     }
 
     // Enables visible_mode. Allows user to make fields visible or invisible.
-    class Switch_visible_mode implements ActionListener {
-        JButton button;
-        public Switch_visible_mode(JButton button){
+    class SwitchVisibleMode implements ActionListener {
+        private JButton button;
+        SwitchVisibleMode(final JButton button) {
             this.button = button;
         }
 
         @Override
-        public void actionPerformed(ActionEvent e) {
-            place_item = Place_item.Visible;
-            button_particle.setBackground(color_inactive_button);
-            button_rock.setBackground(color_inactive_button);
-            button_visible.setBackground(color_visible);
-            update_GUI();
+        public void actionPerformed(final ActionEvent e) {
+            placeItem = GUI.placeItem.Visible;
+            buttonParticle.setBackground(COLOR_INACTIVE_BUTTON);
+            buttonRock.setBackground(COLOR_INACTIVE_BUTTON);
+            buttonVisible.setBackground(COLOR_VISIBLE);
+            updateGUI();
         }
     }
 
     // Step forward in time. Take either from memory or compute new step.
-    class Step_forward implements ActionListener {
+    class StepForward implements ActionListener {
 
         @Override
-        public void actionPerformed(ActionEvent e) {
-            if (!memory.step_forward()){
-                Board cloned_board = board.clone();
-                Observer cloned_observer = observer.clone();
-                cloned_board.connect_observer(cloned_observer);
-                cloned_observer.connect_board(cloned_board);
-                cloned_board.step_in_time();
-                memory.log(cloned_board, cloned_observer);
+        public void actionPerformed(final ActionEvent e) {
+            if (!memory.step_forward()) {
+                Board clonedBoard = board.clone();
+                Observer clonedObserver = observer.clone();
+                clonedBoard.connect_observer(clonedObserver);
+                clonedObserver.connect_board(clonedBoard);
+                clonedBoard.step_in_time();
+                memory.log(clonedBoard, clonedObserver);
             }
             board = memory.get_board();
             observer = memory.get_observer();
-            update_GUI();
+            updateGUI();
         }
     }
 
     // Step backward in time if possible with memory.
-    class Step_backward implements ActionListener {
+    class StepBackward implements ActionListener {
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void actionPerformed(final ActionEvent e) {
             memory.step_backward();
             board = memory.get_board();
             observer = memory.get_observer();
-            update_GUI();
+            updateGUI();
         }
     }
 
     // Update the color of each field
-    public void update_GUI(){
-        for (int i = 0; i < grid_buttons.length; i++){
-            for (int j = 0; j < grid_buttons[i].length; j++){
+    public void updateGUI() {
+        for (int i = 0; i < gridButtons.length; i++) {
+            for (int j = 0; j < gridButtons[i].length; j++) {
 
-                JButton button = grid_buttons[i][j];
+                JButton button = gridButtons[i][j];
                 Color presence = range(observer.probability(new Pair<>(i, j)));
                 button.setBackground(presence);
 
-                if (board.is_rock(i, j)){
-                    button.setBackground(color_rock);
+                if (board.is_rock(i, j)) {
+                    button.setBackground(COLOR_ROCK);
                     continue;
                 }
 
-                if (board.is_particle(i, j)){
+                if (board.is_particle(i, j)) {
                     button.setBorder(BorderFactory.createLineBorder(presence, 6));
-                    button.setBackground(color_particle);
+                    button.setBackground(COLOR_PARTICLE);
                     continue;
                 }
 
                 if (board.is_visible(i, j)) {
-                    button.setBorder(BorderFactory.createLineBorder(color_visible, 5));
+                    button.setBorder(BorderFactory.createLineBorder(COLOR_VISIBLE, 5));
                     button.setBackground(presence);
                 } else {
                     button.setBorder(BorderFactory.createEmptyBorder());
@@ -280,11 +283,12 @@ public class GUI {
     }
 
     // Translates probability into color.
-    public Color range(double i){
-        i = Math.pow(i, 0.5);
-        int cR = (int)(absence_color.getRed()*(1-i) + presence_color.getRed()*i);
-        int cG = (int)(absence_color.getGreen()*(1-i) + presence_color.getGreen()*i);
-        int cB = (int)(absence_color.getBlue()*(1-i) + presence_color.getBlue()*i);
+    public Color range(final double prob) {
+        final double power = 0.5;
+        double mix = Math.pow(prob, power);
+        int cR = (int) (COLOR_ABSENCE.getRed() * (1 - mix) + COLOR_PRESENCE.getRed() * mix);
+        int cG = (int) (COLOR_ABSENCE.getGreen() * (1 - mix) + COLOR_PRESENCE.getGreen() * mix);
+        int cB = (int) (COLOR_ABSENCE.getBlue() * (1 - mix) + COLOR_PRESENCE.getBlue() * mix);
         return new Color(cR, cG, cB);
     }
 }
