@@ -6,47 +6,47 @@ The Memory remembers previous states as Snapshots.
 A Snapshot consists of (copied) Board and Observer.
  */
 public class Memory {
-    static final int num_steps = 20;
-    List<Snapshot> history;
-    int moment = 0;
+    static final int NUM_STEPS = 20;
+    private List<Snapshot> history;
+    private int moment = 0;
 
-    public Memory(Board initial_board, Observer initial_observer){
+    public Memory(final Board initialBoard, final Observer initialObserver) {
         history = new LinkedList<>();
-        log(initial_board, initial_observer);
+        log(initialBoard, initialObserver);
     }
 
     // returns Board at the moment
-    public Board get_board(){
-        return history.get(access_at()).get_board();
+    public Board getBoard() {
+        return history.get(accessAt()).getBoard();
     }
 
     // returns Observer at the moment
-    public Observer get_observer(){
-        return history.get(access_at()).get_observer();
+    public Observer getObserver() {
+        return history.get(accessAt()).getObserver();
     }
 
     // Extends history
-    public void log(Board board, Observer observer){
+    public void log(final Board board, final Observer observer) {
         history.add(new Snapshot(board, observer));
-        if (history.size() > num_steps){
+        if (history.size() > NUM_STEPS) {
             history.remove(0);
         }
         moment = 0;
     }
 
     // step forward in time
-    public boolean step_forward(){
-        if (moment < 0){
-            moment ++;
+    public boolean stepForward() {
+        if (moment < 0) {
+            moment++;
             return true;
         }
         return false;
     }
 
     // step backward in time
-    public boolean step_backward(){
-        if (access_at() > 0){
-            moment --;
+    public boolean stepBackward() {
+        if (accessAt() > 0) {
+            moment--;
             return true;
         }
         return false;
@@ -54,29 +54,30 @@ public class Memory {
 
 
     // Through away future after the moment
-    public void future_changed(){
-        history.subList(access_at() + 1, history.size()).clear();
+    public void futureChanged() {
+        history.subList(accessAt() + 1, history.size()).clear();
         moment = 0;
     }
 
     // Translates moment in time into list index.
-    private int access_at(){return history.size() + moment - 1;}
+    private int accessAt() {
+        return history.size() + moment - 1;
+    }
 
 
     // Snapshot of board and observer
-    private class Snapshot{
-        Board board;
-        Observer observer;
-        public Snapshot(Board board, Observer observer){
+    private class Snapshot {
+        private Board board;
+        private Observer observer;
+        public Snapshot(final Board board, final Observer observer) {
             this.board = board;
             this.observer = observer;
         }
-        public Board get_board(){
+        public Board getBoard() {
             return board;
         }
-        public Observer get_observer(){
+        public Observer getObserver() {
             return observer;
         }
     }
-
 }
