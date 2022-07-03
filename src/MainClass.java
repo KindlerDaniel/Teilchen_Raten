@@ -1,31 +1,38 @@
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.stream.IntStream;
 
 
 public class MainClass {
-
-    // Read the initial state of the Board from JSON file.
-    // Instantiate and connect Board and Observer and GUI.
+    /**
+     * Read in the initial Board from JSON file.
+     * Instantiate and connect Board, Observer and GUI.
+     * @param args no arguments parsed.
+     * @throws JSONException
+     */
     public static void main(final String[] args) throws JSONException {
-        int[][] initialBoard = read_world("world_0");
+        int[][] initialBoard = readWorld("world_0");
         int height = initialBoard.length;
         int width = initialBoard[0].length;
         Board board = new Board(height, width);
         Observer observer = new Observer(height, width);
-        observer.connect_board(board);
-        board.initialize(observer, initialBoard);
+        observer.connectBoard(board);
+        board.connectObserver(observer);
+        board.initializeBoard(initialBoard);
         new GUI(height, width, board, observer);
     }
 
-    // Reads from a JSON file named worlds within the same directory.
-    // Outputs a matrix representation of encoded board.
-    public static int[][] read_world(final String worldName) throws JSONException {
+    /**
+     * Reads JSON file (worlds) that represents state of Board.
+     * @param worldName The world to be loaded.
+     * @return Matrix representation of Board.
+     * @throws JSONException
+     */
+    private static int[][] readWorld(final String worldName) throws JSONException {
         String raw = "";
         Path path = Path.of(System.getProperty("user.dir") + "/worlds");
         try {

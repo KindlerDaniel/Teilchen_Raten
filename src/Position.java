@@ -1,13 +1,14 @@
 import java.util.Objects;
 
 /**
+ * I have NOT written this class by myself!
  * Container to ease passing around a tuple of two objects. This object provides a sensible
  * implementation of equals(), returning true if equals() is true on each of the contained
  * objects.
  */
-public class Pair<F, S> implements Cloneable {
-    public final F first;
-    public final S second;
+public class Position implements Cloneable {
+    public final Integer first;
+    public final Integer second;
 
     /**
      * Constructor for a Pair.
@@ -15,7 +16,7 @@ public class Pair<F, S> implements Cloneable {
      * @param first the first object in the Pair
      * @param second the second object in the pair
      */
-    public Pair(F first, S second) {
+    public Position(final int first, final int second) {
         this.first = first;
         this.second = second;
     }
@@ -25,16 +26,16 @@ public class Pair<F, S> implements Cloneable {
      * Checks the two objects for equality by delegating to their respective
      * {@link Object#equals(Object)} methods.
      *
-     * @param o the {@link Pair} to which this one is to be checked for equality
+     * @param o the {@link Position} to which this one is to be checked for equality
      * @return true if the underlying objects of the Pair are both considered
      *         equal
      */
     @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof Pair)) {
+    public boolean equals(final Object o) {
+        if (!(o instanceof Position)) {
             return false;
         }
-        Pair<?, ?> p = (Pair<?, ?>) o;
+        Position p = (Position) o;
         return Objects.equals(p.first, first) && Objects.equals(p.second, second);
     }
 
@@ -54,7 +55,7 @@ public class Pair<F, S> implements Cloneable {
      * @param b the second object in the pair
      * @return a Pair that is templatized with the types of a and b
      */
-    public static <A, B> Pair<A, B> create(A a, B b) {
-        return new Pair<A, B>(a, b);
+    public static Position create(final int a, final int b) {
+        return new Position(a, b);
     }
 }
