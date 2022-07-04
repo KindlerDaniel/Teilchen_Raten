@@ -3,8 +3,8 @@ Ein Algorithmus, der Aufenthaltswahrscheinlichkeiten für Teilchen berechnet. Di
 
 Dieses Projekt soll helfen den Stand meiner Programmiererfahrung einzuschätzen.
 Die Klasse Position ist nicht von mir.
-Vererbung, interfaces, abstract classes wurden in diesem Projekt nicht benötigt.
-Parallelisierung einiger Abläufe ist der nächste Schritt!
+Vererbung, abstract classes und interfaces wurden in diesem Projekt nicht benötigt.
+Die Parallelisierung einiger Abläufe ist der nächste Schritt!
 
 ![alt text](https://github.com/KindlerDaniel/Teilchen_Raten/blob/main/GUI_screenshot.png)
 
